@@ -11,9 +11,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 
 public class MethodExtractor {
-	public MethodExtractor() {
-		
-	}
+	private static final int MINLINE = 6;
 	
 	public ArrayList<JavaMethod> extractMethod(String filePath)
 			throws FileNotFoundException, com.github.javaparser.ParseException {
@@ -31,19 +29,23 @@ public class MethodExtractor {
 					// extract the constructors
 					if (member instanceof ConstructorDeclaration) {
 						ConstructorDeclaration constructor = (ConstructorDeclaration) member;
-						JavaMethod jm = new JavaMethod(count, filePath, constructor.getName(),
-								constructor.getDeclarationAsString() + constructor.getBlock(),
-								constructor.getBeginLine(), constructor.getEndLine(), "");
-						methodList.add(jm);
-						count++;
+						if ((constructor.getEndLine() - constructor.getBeginLine() + 1) >= MINLINE) {
+							JavaMethod jm = new JavaMethod(count, filePath, constructor.getName(),
+									constructor.getDeclarationAsString() + constructor.getBlock(),
+									constructor.getBeginLine(), constructor.getEndLine(), "");
+							methodList.add(jm);
+							count++;
+						}
 						// extract all the methods
 					} else if (member instanceof MethodDeclaration) {
 						MethodDeclaration method = (MethodDeclaration) member;
-						JavaMethod jm = new JavaMethod(count, filePath, method.getName(),
-								method.getDeclarationAsString() + method.getBody().toString(), method.getBeginLine(),
-								method.getEndLine(), "");
-						methodList.add(jm);
-						count++;
+						if ((method.getEndLine() - method.getBeginLine() + 1) >= MINLINE) {
+							JavaMethod jm = new JavaMethod(count, filePath, method.getName(),
+									method.getDeclarationAsString() + method.getBody().toString(),
+									method.getBeginLine(), method.getEndLine(), "");
+							methodList.add(jm);
+							count++;
+						}
 					}
 				}
 			}

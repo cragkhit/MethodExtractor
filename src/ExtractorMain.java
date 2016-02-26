@@ -19,7 +19,7 @@ public class ExtractorMain {
 				String outfile = args[1] + "/" + args[0].replace(".java", "") + "$" + method.getMethodName() + ".java";
 				FileWriter fw = new FileWriter(outfile);
 				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write("public" + method.getMethodName() + " {" + method.getMethod() + "}");
+				bw.write(method.getMethod());
 				bw.close();
 			}
 		} catch (FileNotFoundException e) {
